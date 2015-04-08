@@ -377,7 +377,16 @@ class ApplicationController < ActionController::Base
     @community_translations ||= TranslationService::API::Api.translations.get(@current_community.id)[:data]
   end
 
+  def tr_opts
+    @tr_opts ||= TranslationServiceHelper::TranslationOpts.call(
+      {
+        locale: I18n.locale,
+        all_locales: @current_community.locales,
+        cache: community_translations
+      })
+  end
+
   def translate(key, opts = {})
-    TranslationServiceHelper.pick_translation(key, community_translations, @current_community.locales, I18n.locale, opts)
+    TranslationServiceHelper.pick(key, tr_opts, opts)
   end
 end

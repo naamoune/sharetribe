@@ -1,6 +1,16 @@
 module TranslationServiceHelper
 
+  TranslationOpts = EntityUtils.define_builder(
+    [:locale, :to_string, :mandatory],
+    [:all_locales, :array, default: []],
+    [:cache, :array, :mandatory]
+  )
+
   module_function
+
+  def pick(key, tr_opts, opts = {})
+    pick_translation(key, tr_opts[:cache], tr_opts[:all_locales], tr_opts[:locale], opts)
+  end
 
   def pick_translation(key, community_translations, community_locales, user_locale, opts = {})
     translations_for_key = community_translations.select { |translation| translation[:translation_key] == key }
